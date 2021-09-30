@@ -1,0 +1,5 @@
+2 2
+[2020-03-16 16:15:25] INFO Disk size is 100 Gb
+[2020-03-16 23:59:59] ERROR Disk size is too sm
+[2020-03-17 00:00:00] ERROR Network failute dete
+[2020-03-17 00:00:01] ERROR Cant write varlogmysq
