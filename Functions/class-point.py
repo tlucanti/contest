@@ -3,14 +3,13 @@ import builtins
 
 
 class point(object):
-	def __init__(self, x, y):
+	def __init__(self, x, *other):
+		if hasattr(x, '__iter__'):
+			x, y = list(x)
+        else:
+            y = other
 		self.x = x
 		self.y = y
-
-	def __del__(self):
-		del self.x
-		del self.y
-		del self
 
 	def __repr__(self):
 		# return '<point object at {}>'.format(hex(id(self)))
@@ -231,6 +230,9 @@ class point(object):
 	def __imod__(self, other):
 		return self % other
 
+	def __matmul__(self, other):
+		return self.x * other.y - self.y * other.x
+
 	def norm(self):
 		ln = len(self)
 		self.x /= ln
@@ -238,6 +240,9 @@ class point(object):
 
 	def diag(self):
 		return self.__abs__()
+
+	def copy(self):
+		return point(self.x, self.y)
 
 
 def len(__n):
