@@ -1,5 +1,0 @@
-Window
-Bird
-Food
-Human
-
