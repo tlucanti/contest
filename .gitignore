@@ -3,3 +3,4 @@ a.out
 *.txt
 .DS_Store
 __pycache__
+*.pdf

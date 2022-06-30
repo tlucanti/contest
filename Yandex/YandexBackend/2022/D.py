@@ -24,9 +24,9 @@ steps[last] = (sy + 1, sx, 0)
 last += 1
 steps[last] = (sy - 1, sx, 1)
 last += 1
-steps[last] = (sy + 1, sx, 2)
+steps[last] = (sy, sx + 1, 2)
 last += 1
-steps[last] = (sy + 1, sx, 3)
+steps[last] = (sy, sx - 1, 3)
 last += 1
 
 while True:
