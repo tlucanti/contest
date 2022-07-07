@@ -4,3 +4,4 @@ a.out
 .DS_Store
 __pycache__
 *.pdf
+a.out.dSYM
