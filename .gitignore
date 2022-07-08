@@ -5,3 +5,4 @@ a.out
 __pycache__
 *.pdf
 a.out.dSYM
+*.swp
