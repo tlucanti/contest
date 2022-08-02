@@ -18,6 +18,7 @@ for _ in range(int(input())):
         if remaining == 0:
             break
         if d[i] == 2:
+            d[i] -= 1
             remaining -= 1
         if d[i] > 1:
             d[i] -= 1

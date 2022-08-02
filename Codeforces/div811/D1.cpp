@@ -64,7 +64,7 @@ int main()
 			cout << "-1\n";
 		else
 		{
-			cout << ans.size();
+			cout << ans.size() << endl;
 			for (auto qwe : ans)
 				cout << qwe.first << ' ' << qwe.second << endl;
 		}
