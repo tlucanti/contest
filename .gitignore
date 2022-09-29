@@ -6,3 +6,5 @@ __pycache__
 *.pdf
 a.out.dSYM
 *.swp
+in
+out
