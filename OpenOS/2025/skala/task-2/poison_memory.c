@@ -9,10 +9,6 @@
 #error "POISON_PERCENTAGE must be between 0 and 100"
 #endif
 
-#ifndef POISON_FREE_ONLY
-#define POISON_FREE_ONLY false
-#endif
-
 static int poison_page(unsigned long pfn)
 {
 	int ret = 0;
@@ -20,19 +16,6 @@ static int poison_page(unsigned long pfn)
 	if (!pfn_valid(pfn)) {
 		pr_warn("Invalid PFN: %lu\n", pfn);
 		return EINVAL;
-	}
-
-	if (POISON_FREE_ONLY) {
-		/*
-		 * only poison free pages, to prevent killing processes
-		 * accessing these pages
-		*/
-		struct page *page = pfn_to_page(pfn);
-
-		if (PageBuddy(page) || PageSlab(page) || !PageReserved(page)) {
-			pr_warn("Skipped page in use at PFN %lu\n", pfn);
-			return EPERM;
-		}
 	}
 
 	/*
