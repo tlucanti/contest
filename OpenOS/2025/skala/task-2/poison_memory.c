@@ -1,22 +1,6 @@
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/mm.h>
-#include <linux/slab.h>
-#include <linux/uaccess.h>
-#include <asm/page.h>
 
 #include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
 #include <linux/mm.h>
-#include <linux/slab.h>
-#include <linux/pagemap.h>
-#include <linux/vmalloc.h>
-#include <asm/page.h>
-#include <asm/pgtable.h>
-
-#include <linux/page-flags.h>
 
 #ifndef POISON_PERCENTAGE
 #define POISON_PERCENTAGE 10
@@ -26,7 +10,7 @@
 #endif
 
 #ifndef POISON_FREE_ONLY
-#define POISON_FREE_ONLY true
+#define POISON_FREE_ONLY false
 #endif
 
 static int poison_page(unsigned long pfn)
@@ -40,23 +24,27 @@ static int poison_page(unsigned long pfn)
 
 	if (POISON_FREE_ONLY) {
 		/*
-		 * only poison free pages, to prevent killing accessing
-		 * this page processes
+		 * only poison free pages, to prevent killing processes
+		 * accessing these pages
 		*/
 		struct page *page = pfn_to_page(pfn);
 
-		if (PageBuddy(page) && PageSlab(page) && !PageReserved(page)) {
+		if (PageBuddy(page) || PageSlab(page) || !PageReserved(page)) {
 			pr_warn("Skipped page in use at PFN %lu\n", pfn);
 			return EPERM;
 		}
 	}
 
-	SetPageHWPoison(pfn_to_page(pfn));
+	/*
+	 * tell linux to offline page to safely inject poison flag to it
+	 */
+	ret = soft_offline_page(pfn, 0);
 	if (ret) {
-		pr_warn("Failed to poison page at PFN %lu (error %d)\n",
-			pfn, ret);
-		return EINVAL;
+		pr_warn("Failed to set page offline at PFN %lu\n", pfn);
+		return ret;
 	}
+
+	SetPageHWPoison(pfn_to_page(pfn));
 
 	pr_info("Poisoned page at PFN %lu successfully.\n", pfn);
 
@@ -68,6 +56,7 @@ static int __init hwpoison_init(void)
 	unsigned long total_pages = totalram_pages();
 	unsigned long pages_to_poison = (total_pages * POISON_PERCENTAGE) / 100;
 	unsigned long poisoned = 0;
+	pages_to_poison = 1;
 
 	pr_info("Memory Poison Module loaded (poisoning %d%% of RAM).\n",
 		POISON_PERCENTAGE);
