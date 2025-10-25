@@ -7,6 +7,7 @@ all:
 
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) clean
+	rm -f *.ko *.o *.order *.symvers *.mod.c *.mod .*.cmd
 
 install:
 	sudo insmod cpu_control.ko
