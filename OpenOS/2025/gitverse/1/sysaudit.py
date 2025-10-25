@@ -17,8 +17,6 @@ PID_CACHE = {}  # Cache PID -> process name (optional, can be extended)
 
 def dprint(*args, **kwargs): pass
 
-dprint = print
-
 import threading
 from typing import List
 
@@ -74,8 +72,13 @@ class GitHelper:
         return repo
 
     def commit(self, message):
+        if isinstance(message, list):
+            msg = '\n'.join(message)
+        else:
+            msg = str(message)
+
         try:
-            self.repo.git.commit(message=message, gpg_sign=True, allow_empty=True)
+            self.repo.git.commit(message=msg, gpg_sign=True, allow_empty=True)
         except GitCommandError as e:
             print(f"Failed to create commit: {e}", file=sys.stderr)
 
@@ -318,8 +321,8 @@ def parse_args():
     monitor_parser.add_argument(
         "--squash-period",
         type=int,
-        default=1,
-        help="Period (in seconds) to squash reports in to batches. Default: 1",
+        default=5,
+        help="Period (in seconds) to squash reports in to batches. Default: 5",
     )
     monitor_parser.add_argument(
         "--log",
