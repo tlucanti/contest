@@ -1,0 +1,26 @@
+[Unit]
+Description=System Audit Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=audit-user
+Group=audit-user
+WorkingDirectory=/home/audit-user/
+ExecStart=/usr/bin/python3 \
+	/home/tlucanti/git/contest/OpenOS/2025/gitverse/1/sysaudit.py \
+	monitor \
+	--watch /etc \
+	--watch /usr/local/bin \
+	--ignore '*.tmp' \
+	--ignore '*.swp' \
+	--ignore '*.log' \
+	--repo /home/tlucanti/git/contest/OpenOS/2025/gitverse/1/audit_db
+	--log /home/tlucanti/git/contest/OpenOS/2025/gitverse/1/audit.log
+Restart=always
+StandardOutput=journal
+StandardError=journal
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target
